@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# Redirect all traffic to the hooks.php file
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . hooks.php [L]
