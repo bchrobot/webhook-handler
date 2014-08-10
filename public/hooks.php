@@ -39,7 +39,7 @@ if($using_secret_token)
 }
 
 // Process webhook payload
-$payload = processPayload();
+$payload = processPayload($HTTP_RAW_POST_DATA);
 
 // Process hook.yml for repository if it's configured
 if( array_key_exists($payload['repo_full_name'], $repositories) && is_array($repositories[$payload['repo_full_name']]))
