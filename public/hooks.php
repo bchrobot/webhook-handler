@@ -1,4 +1,8 @@
 <?php
+//`cd /var/www/foo.lake-sunapee.org; git pull`;
+//die();
+
+
 // Require dependencies
 if(!file_exists("../config/config.php"))
 {
@@ -62,15 +66,17 @@ if($using_secret_token)
 
 // Process webhook payload
 $headers = getallheaders();
-$response["event"] = $headers['X-Github-Event'];
+$response["event"] = $headers['X-GitHub-Event'];
 $webhookJSON = json_decode($HTTP_RAW_POST_DATA);
 $repoName = $webhookJSON->repository->full_name;
 
 if( array_key_exists($repoName, $repositories) && is_array($repositories[$repoName]))
 {
 	$repoDir = $repositories[$repoName]['dir'];
-	system('cd '.$repoDir);
-	system('git pull');
+	$response["repo"] = array("name" => $repoName, "repoDir" => $repoDir);
+
+	chdir($repoDir);
+	$response["shell-git"] = shell_exec("sudo -u webhook-handler /usr/bin/git pull 2>&1");
 }
 
 
@@ -79,5 +85,5 @@ if( array_key_exists($repoName, $repositories) && is_array($repositories[$repoNa
 
 // Set response code and return JSON
 http_response_code(200);
-echo json_encode($response);
+echo json_encode($response, JSON_UNESCAPED_SLASHES);
 ?>
