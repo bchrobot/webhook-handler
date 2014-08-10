@@ -1,0 +1,24 @@
+<?php
+
+// Security with Secret Token
+$using_secret_token = false;
+// Note: secret token itself should be stored as an environment variable.
+//       If you are unsure of how to do that, please see the documentation
+
+// List Gitlab install's API IPs
+$gitlab_ips = [
+	'127.0.0.1',
+	// '192.30.252.3'
+];
+
+// Define repositories
+$repositories = [
+	'acme/acmewebsite.com/master' => [
+		'dir' => '/var/www/acme/acmewebsite.com',
+		'repo' => 'acmewebsite.com',
+		'owner' => 'acme',
+		'branch' => 'master'
+	]
+];
+
+?>

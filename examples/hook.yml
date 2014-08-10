@@ -1,0 +1,22 @@
+# Customize as follows:
+#   action:
+#     branch:
+#       emails:
+#         - email@domain.com
+#       bash:
+#         - /usr/local/bin/composer install
+#
+# For wildcard action or branch use 'any'
+
+
+# Laravel Example:
+# push:
+#   any:
+#     emails:
+#       - webmaster@domain.com
+#   master:
+#     emails:
+#       - release-list@domain.com
+#     bash:
+#       - /usr/local/bin/composer install
+#       - php artisan migrate --env=production

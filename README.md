@@ -36,7 +36,7 @@ Add each repository you want to handle webhooks for to the configuration file.
 * Add each repository you will be handling webhooks for to the array in `config.php`   
   Note: the actual behavior will be specified within the project directories themselves
 * Copy `examples/hook.yml` into the root of each repository and customize your hook behavior! This file specifies the specific behavior associated with each webhook (see below for examples)  
-  > Note: for security it is assumed that you are serving web content from a sub-directory such as `/var/wwww/domain.com/public_html/` and not from the repository root itself
+  Note: for security it is assumed that you are serving web content from a sub-directory such as `/var/wwww/domain.com/public_html/` and not from the repository root itself
 
 
 ## Licensing and Contributors
