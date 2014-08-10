@@ -1,0 +1,10 @@
+{
+    "name": "bchrobot/webhook-handler",
+    "description": "Customizable webhook deploy platform",
+    "require": {
+        "php": ">=5.3.1",
+        "jalle19/php-whitelist-check": "dev-master",
+        "mustangostang/spyc": "0.5.*@dev",
+        "swiftmailer/swiftmailer": "dev-master"
+    }
+}

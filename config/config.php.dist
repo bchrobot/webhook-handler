@@ -13,11 +13,12 @@ $gitlab_ips = [
 
 // Define repositories
 $repositories = [
-	'acme/acmewebsite.com/master' => [
-		'dir' => '/var/www/acme/acmewebsite.com',
-		'repo' => 'acmewebsite.com',
-		'owner' => 'acme',
-		'branch' => 'master'
+	'bchrobot/webhook-handler' => [
+		'dir' => '/var/www/deploy.lake-sunapee.org',
+	],
+	'bchrobot/webhook-handler' => [
+		'dir' => '/var/www/deploy.lake-sunapee.org',
+		'yml' => 'deploy/hooks.yml'	// overrides the default location/name of the repository configuration file
 	]
 ];
 
