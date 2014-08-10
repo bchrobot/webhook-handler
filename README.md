@@ -1,12 +1,11 @@
-webhook-handler
-===============
+# About webhook-handler
 
-PHP-based webhook handler for deploying on Linux/Apache2 servers with name-based hosting.
+This is a customizable PHP-based webhook handler for deploying on LA\*P servers using name-based virtual hosts. Custom hook behavior may specified at both the Git action and repository branch levels via YAML files located in each repository.
 
 # Requirements
 
-### LA\*P System
-This service is configured for a Linux stack running Apache2 and PHP. All examples given have been tested on Ubuntu 14.04 and may require some tweaking for different distros.
+### LA\*P Stack
+This service is written for a Linux stack running Apache2 and PHP. All examples given have been tested on Ubuntu 14.04 and may require some tweaking for other distros.
 
 
 # Installation
@@ -22,14 +21,6 @@ Create a distinct VirtualHost with it's own subdomain to handle web hooks.
 * Enable the new VirtualHost `sudo a2ensite deploy.domain.com.conf`
 * Reload Apache configuration `sudo service apache2 reload`
 
-### Create User to Handle Pull Requests for Apache
-A separate user will be created with the sole purpose of performing the `git pull` command on behalf of Apache
-
-> Reference:  
-http://jondavidjohn.com/git-pull-from-a-php-script-not-so-simple/  
-http://serverfault.com/questions/362012/running-git-pull-from-a-php-script  
-http://stackoverflow.com/questions/22467706/vagrantbutcher-sudo-no-tty-present-and-no-askpass-program-specified-when-tr  
-
 ### Clone Production-ready Repositories
 Perform the initial clones of each repository you will be serving.
 * `git clone git@github.com:username/domain1.com.git /var/www/domain1.com`  
@@ -38,16 +29,59 @@ Perform the initial clones of each repository you will be serving.
 * Reload Apache configuration `sudo service apache2 reload`
 * Make sure your projects are up and running before continuing
 
+### Create User to Handle Pull Requests for Apache
+A separate user will be created with the sole purpose of performing the `git pull` command on behalf of Apache
+
+* Create the user `sudo adduser webhook-handler`
+* Ensure the user has access to `/var/www`
+  * __Example.__ If ownership of `/var/www` is `root:www-pub` then `usermod -a -G www-pub webhook-handler`  
+    _Note: See [Tom's Guide](http://serverfault.com/questions/6895/whats-the-best-way-of-handling-permissions-for-apache2s-user-www-data-in-var) for a good way to handle ownership and permissions on_ `/var/www`
+* Ensure the user has access to the Git repository
+  * Generate a __password-less__ ssh key for user `sudo -u webhook-handler ssh-keygen -t rsa`
+  * Copy the public key contents `sudo cat /home/webhook-handler/.ssh/id_rsa.pub`
+  * Add the public key as a deploy key to each online repository.  
+    On Github navigate to __your-repository -> Settings -> Deploy keys -> Add deploy key__
+* Give Apache sudo access to run git as webhook-handler
+  * Edit sudoers `sudo visudo`
+  * Add line for Apache user `www-data        ALL=(webhook-handler) NOPASSWD: /usr/bin/git`
+* Pull from deploy repos as webhook-handler user to add Github/Gitlab to `known_hosts`  
+  `cd /var/www/domain1.com; sudo -u webhook-handler git pull`  
+  `cd /var/www/domain2.com; sudo -u webhook-handler git pull`
+
+Congratulations! The `hooks.php` script should now be able to manage your repositories.
+
+> Reference:  
+http://jondavidjohn.com/git-pull-from-a-php-script-not-so-simple/  
+http://serverfault.com/questions/362012/running-git-pull-from-a-php-script  
+http://stackoverflow.com/questions/22467706/vagrantbutcher-sudo-no-tty-present-and-no-askpass-program-specified-when-tr
+
 ### Configure Deploy Repositories
+
+#### General Repository Configuration
 Add each repository you want to handle webhooks for to the configuration file.
 * Copy `config.php.dist` to `config.php`
-* Add each repository you will be handling webhooks for to the array in `config.php`   
-  Note: the actual behavior will be specified within the project directories themselves
-* Copy `examples/hook.yml` into the root of each repository and customize your hook behavior! This file specifies the specific behavior associated with each webhook (see below for examples)  
-  Note: for security it is assumed that you are serving web content from a sub-directory such as `/var/wwww/domain.com/public_html/` and not from the repository root itself
+* If you are using a secret token, set `$using_secret_token = true;`
+* If you are using your own Gitlab install add your Gitlab IP addresses to `$gitlab_ips[]`
+* Add each repository you will be handling webhooks for to the array in `config.php`
+    * To specify a custom location for the `hook.yml` behavior file, do so by adding a `yml` key to the repository array with value containing `hook.yml` path relative to `dir`  
+    ```php
+    // Overrides the default location/name of the repository configuration file
+    // Absolute path to behavior file will then be /var/www/domain.com/deploy/hooks.yml
+    $repositories = [
+      'bchrobot/awesome-website' => [
+  		  'dir' => '/var/www/domain.com',
+  		  'yml' => 'deploy/hooks.yml'
+  	  ]
+    ]
+    ```
+
+#### Specific Repository Behavior
+* Copy `examples/hook.yml` into the root of each repository or the location specificied in `config.php`.  
+  _Note: for security it is assumed that you are serving web content from a sub-directory such as_ `/var/wwww/domain.com/public_html/` _and not from the repository root itself_
+* Customize email notifications and deploy scripts based on the webhook action and the repository branch
 
 
-## Licensing and Contributors
+# Licensing and Contributors
 
 This project is licensed under the MIT License
 
