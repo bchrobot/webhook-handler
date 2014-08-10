@@ -3,13 +3,13 @@ webhook-handler
 
 PHP-based webhook handler for deploying on Linux/Apache2 servers with name-based hosting.
 
-## Requirements
+# Requirements
 
-### mod_rewrite
-`sudo a2enmod rewrite`
+### LA\*P System
+This service is configured for a Linux stack running Apache2 and PHP. All examples given have been tested on Ubuntu 14.04 and may require some tweaking for different distros.
 
 
-## Installation
+# Installation
 
 ### Clone Webhook Handler
 Copy files to production server.
@@ -21,6 +21,14 @@ Create a distinct VirtualHost with it's own subdomain to handle web hooks.
 * Edit the virtual host as necessary updating the domain and directory to your own
 * Enable the new VirtualHost `sudo a2ensite deploy.domain.com.conf`
 * Reload Apache configuration `sudo service apache2 reload`
+
+### Create User to Handle Pull Requests for Apache
+A separate user will be created with the sole purpose of performing the `git pull` command on behalf of Apache
+
+> Reference:  
+http://jondavidjohn.com/git-pull-from-a-php-script-not-so-simple/  
+http://serverfault.com/questions/362012/running-git-pull-from-a-php-script  
+http://stackoverflow.com/questions/22467706/vagrantbutcher-sudo-no-tty-present-and-no-askpass-program-specified-when-tr  
 
 ### Clone Production-ready Repositories
 Perform the initial clones of each repository you will be serving.
