@@ -7,12 +7,16 @@ This is a customizable PHP-based webhook handler for deploying on LA\*P servers 
 ### LA\*P Stack
 This service is written for a Linux stack running Apache2 and PHP. All examples given have been tested on Ubuntu 14.04 and may require some tweaking for other distros.
 
+### Composer
+This service uses Composer to manage dependencies. In order to complete the installation you will need to have Composer installed. Please see [Installing Composer](https://getcomposer.org/doc/00-intro.md#installation-nix).
+
 
 # Installation
 
 ### Clone Webhook Handler
-Copy files to production server.
+Clone files to production server and install dependencies.
 * `git clone git@github.com:bchrobot/webhook-handler.git /var/www/deploy.domain.com`
+* `cd /var/www/deploy.domain.com; composer install`
 
 ### Create a VirtualHost for Deploying
 Create a distinct VirtualHost with it's own subdomain to handle web hooks.
